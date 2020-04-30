@@ -344,6 +344,15 @@ func (h *Harvester) Run() error {
 			return nil
 		}
 
+		popcorn := Popcorn{}
+		popcorn.Initial(state.Source)
+		_, poperr := popcorn.PopLine(state.Offset)
+		if poperr != nil {
+		fmt.Println(poperr)
+		} else {
+			state.Offset = 0
+		}
+
 		// Update state of harvester as successfully sent
 		h.state = state
 
@@ -351,6 +360,7 @@ func (h *Harvester) Run() error {
 		h.metrics.readOffset.Set(state.Offset)
 		h.metrics.lastPublished.Set(time.Now())
 		h.metrics.lastPublishedEventTimestamp.Set(message.Ts)
+
 	}
 }
 
