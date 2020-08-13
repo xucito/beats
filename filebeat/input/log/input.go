@@ -562,7 +562,12 @@ func (p *Input) harvestExistingFile(newState file.State, oldState file.State) {
 		// Nothing to do. Harvester is still running and file was not renamed
 		logp.Debug("input", "Harvester for file is still running: %s", newState.Source)
 	} else {
-		logp.Debug("input", "File didn't change: %s", newState.Source)
+		logp.Debug("input", "File didn't change: %s, Last Change: %v", newState.Source, newState.Fileinfo.ModTime())
+		if newState.Fileinfo.ModTime().Before(time.Now().AddDate(0, 0, -1)) {
+			logp.Info("input", "Deleting file: %s", newState.Source)
+			os.Remove(newState.Source)
+		}
+		//if newState.Fileinfo.ModTime()
 	}
 }
 
